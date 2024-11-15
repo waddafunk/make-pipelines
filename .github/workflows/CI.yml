@@ -1,0 +1,57 @@
+name: CI steps
+
+on:
+    workflow_call:
+      inputs:
+        python-versions:
+          required: false
+          default: '["3.12"]'
+          type: string
+          description: 'JSON array of Python versions to test against'
+        os:
+          required: false
+          type: string
+          default: '["ubuntu-latest"]'
+          description: 'JSON array of operating systems to test on'
+
+jobs:
+  format-upgrade-lint:
+    strategy:
+      matrix:
+        python-version: ${{ fromJSON(inputs.python-versions) }}
+        os: ${{ fromJSON(inputs.os) }}
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          
+      - name: Install dependencies
+        run: make dev-install
+          
+      - name: Run formatters
+        run: make format
+
+      - name: Run upgraders
+        run: make upgrade
+          
+      - name: Run linter
+        run: make lint
+          
+      - name: Commit and push changes if any
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add -A
+            git commit -m "style: format code with black and isort"
+            git push
+          else
+            echo "No changes to commit"
+          fi
