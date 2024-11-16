@@ -1,0 +1,42 @@
+name: format-and-lint
+
+on:
+  workflow_call:
+    outputs:
+      has-changes:
+        description: "Whether formatting made any changes"
+        value: ${{ jobs.check.outputs.has-changes }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      has-changes: ${{ steps.check-changes.outputs.has-changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      
+      - name: Install dependencies
+        run: make dev-install
+      
+      - name: Format and upgrade
+        run: |
+          make format
+          make upgrade
+      
+      - id: check-changes
+        name: Check for changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Lint
+        run: make lint

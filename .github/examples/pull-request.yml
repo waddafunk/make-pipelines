@@ -1,0 +1,22 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  format-and-lint:
+    uses: ./.github/workflows/format-and-lint.yml
+
+  test:
+    uses: ./.github/workflows/test.yml
+    with:
+      python-versions: '["3.11", "3.12"]'
+      os: '["ubuntu-latest", "macos-latest"]'
+
+  commit:
+    needs: [format-and-lint, test]
+    if: needs.format-and-lint.outputs.has-changes == 'true'
+    uses: ./.github/workflows/commit-changes.yml
+    with:
+      ref: ${{ github.head_ref }}

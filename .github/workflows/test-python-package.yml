@@ -10,7 +10,7 @@ on:
       os:
         required: false
         type: string
-        default: '["ubuntu-latest"]'
+        default: '["ubuntu-latest", "macos-latest", "windows-latest"]'
         description: 'JSON array of operating systems to test on'
 
 jobs:
