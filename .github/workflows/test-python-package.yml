@@ -30,6 +30,21 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+
+      # Install make on Windows
+      - name: Install make (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install make
+          refreshenv
+      
+      # Install make on macOS if not present
+      - name: Install make (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          if ! command -v make &> /dev/null; then
+            brew install make
+          fi
           
       - name: Install dependencies
         run: make dev-install
