@@ -19,6 +19,12 @@ jobs:
       matrix:
         python-version: ${{ fromJSON(inputs.python-versions) }}
         os: ${{ fromJSON(inputs.os) }}
+        exclude:
+          # macOS arm64 only supports Python 3.9+
+          - os: macos-latest
+            python-version: "3.7"
+          - os: macos-latest
+            python-version: "3.8"
       fail-fast: false
     
     runs-on: ${{ matrix.os }}  # This line was missing
