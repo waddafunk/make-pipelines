@@ -34,9 +34,11 @@ jobs:
       # Install make on Windows
       - name: Install make (Windows)
         if: runner.os == 'Windows'
+        shell: powershell
         run: |
           choco install make
-          refreshenv
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+          Update-SessionEnvironment
       
       # Install make on macOS if not present
       - name: Install make (macOS)
