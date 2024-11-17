@@ -1,0 +1,8 @@
+pipeline:
+  test:
+    image: python:${PYTHON_VERSION}-slim
+    commands:
+      - make dev-install
+      - make format lint test
+    when:
+      event: [push, pull_request, manual]

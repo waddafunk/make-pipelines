@@ -1,0 +1,17 @@
+pipeline:
+  push-if-changes:
+    image: alpine/git:latest
+    commands:
+      - git config --global user.name "${CI_COMMIT_AUTHOR}"
+      - git config --global user.email "${CI_COMMIT_AUTHOR_EMAIL}"
+      - git remote set-url origin "https://oauth2:$${git_push_token}@github.com/${CI_REPO}.git"
+      - git add --all
+      - |
+        if [ -n "$(git status --porcelain)" ]; then
+          git commit -m "[CI skip] Autocommit, upgrade & format"
+          echo "Pushing changes..."
+          git push origin ${CI_COMMIT_BRANCH}
+        else
+          echo "No changes to commit"
+        fi
+    secrets: [ git_push_token ]
