@@ -1,4 +1,4 @@
-pipeline:
+steps:
   format-and-lint:
     image: python:3.12-slim
     commands:

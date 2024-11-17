@@ -1,4 +1,4 @@
-pipeline:
+steps:
   push-if-changes:
     image: alpine/git:latest
     commands:

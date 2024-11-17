@@ -1,4 +1,4 @@
-pipeline:
+steps:
   test:
     image: python:${PYTHON_VERSION}-slim
     commands:
