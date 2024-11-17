@@ -10,5 +10,3 @@ pipeline:
       - make upgrade
       - make format
       - make lint
-    when:
-      status: [ success ]
