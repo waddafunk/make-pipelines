@@ -10,3 +10,9 @@ pipeline:
       - make upgrade
       - make format
       - make lint
+      - |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "HAS_CHANGES=true" >> $WOODPECKER_ENV
+        else
+          echo "HAS_CHANGES=false" >> $WOODPECKER_ENV
+        fi
