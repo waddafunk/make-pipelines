@@ -1,5 +1,13 @@
 steps:
   test:
+    image: python:${PYTHON_VERSION}
+    matrix:
+      PYTHON_VERSION:
+        - "3,7"
+        - "3.8"
+        - "3.9"
+        - "3.10"
+        - "3.11"
     commands:
       - make dev-install
       - make format lint test
