@@ -1,6 +1,21 @@
+when:
+  event: [push, pull_request, manual]
+  branch: [main, development]
+
+matrix:
+  PYTHON_VERSION:
+    - "3.7"
+    - "3.8"
+    - "3.9"
+    - "3.10"
+    - "3.11"
+    - "3.12"
+
 steps:
   test:
-    image: python:${python_version}
+    image: python:${PYTHON_VERSION}-slim
     commands:
+      - apt-get update -y
+      - apt-get install -y build-essential make
       - make dev-install
-      - make format lint test
+      - make test
